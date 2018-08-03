@@ -1,6 +1,5 @@
 config create:
 	dbhost: main_db
-	dbname: wordpress
 	dbuser: root
 	dbpass:
 	extra-php: |

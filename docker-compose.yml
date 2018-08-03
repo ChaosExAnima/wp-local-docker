@@ -12,9 +12,6 @@ services:
   nginx:
     depends_on:
       - phpfpm
-    ports:
-      - "80:80"
-      - "443:443"
     image: nginx:latest
     volumes:
       - "./wordpress:/var/www/html"
@@ -22,6 +19,9 @@ services:
       - "./config/certs:/etc/nginx/certs"
       - "./logs/nginx:/var/log/nginx"
     restart: unless-stopped
+    labels:
+      - "traefik.frontend.rule=Host:${PROJECT_NAME}.dev.localhost"
+      - "traefik.frontend.redirect.entryPoint=https"
 
   wpsnapshots:
     image: 10up/wpsnapshots
@@ -44,6 +44,6 @@ services:
   #     - "./config/elasticsearch/plugins:/usr/share/elasticsearch/plugins"
 
 networks:
-    default:
-        external:
-            name: dev
+  default:
+    external:
+      name: dev

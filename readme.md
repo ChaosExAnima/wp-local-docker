@@ -4,7 +4,7 @@ This is a Docker based local development environment for WordPress.
 
 ## What's Inside
 
-This project is based on [docker-compose](https://docs.docker.com/compose/). By default, the following containers are started: PHP-FPM, MariaDB, Elasticsearch, nginx, and Memcached. The `/wordpress` directory is the web root which is mapped to the nginx container.
+This project is based on [docker-compose](https://docs.docker.com/compose/). By default, the following containers are started: PHP-FPM, MySQL, Elasticsearch, nginx, and Memcached. The `/wordpress` directory is the web root which is mapped to the nginx container.
 
 You can directly edit PHP, nginx, and Elasticsearch configuration files from within the repo as they are mapped to the correct locations in containers.
 
@@ -22,11 +22,13 @@ The `/config/elasticsearch/plugins` folder is mapped to the plugins folder in th
 1. `git clone https://github.com/10up/wp-local-docker.git <my-project-name>`
 1. `cd <my-project-name>`
 1. `docker-compose up`
-1. Run setup to download WordPress and create a `wp-config.php` file.
+1. Run setup to download and install WordPress.
 	1. On Linux / Unix / OSX, run `sh bin/setup.sh`.
 	2. On Windows, run `./bin/setup`.
-1. Navigate to `http://localhost` in a browser to finish WordPress setup.
-	1. If you want to use a domain other than `http://localhost`, you'll need to add an entry to your hosts file. Ex: `127.0.0.1 docker.localhost`
+
+If you want to use a domain other than `http://localhost`, you'll need to:
+1. Add an entry to your hosts file. Ex: `127.0.0.1 docker.localhost`
+1. Update _WordPress Address (URL)_ and _Site Address (URL)_.
 
 Default MySQL connection information (from within PHP-FPM container):
 
@@ -36,6 +38,15 @@ Username: wordpress
 Password: password
 Host: mysql
 ```
+
+Default WordPress admin credentials:
+
+```
+Username: admin
+Password: password
+```
+
+Note: if you provided details different to the above during setup, use those instead.
 
 Default Elasticsearch connection information (from within PHP-FPM container):
 
@@ -90,15 +101,34 @@ There is also a script in the `/bin` directory that will allow you to execute WP
 
 ## SSH Access
 
-You can easily access the WordPress/PHP container with `docker-compose exec`. Here's a simple alias to add to your `~/.bash_profile`:
+You can easily access the WordPress/PHP container with `docker-compose exec:
 
 ```
-alias dcbash='docker-compose exec --user root phpfpm bash'
+docker-compose exec --user root phpfpm bash
 ```
-
-This alias lets you run `dcbash` to SSH into the PHP/WordPress container.
 
 Alternatively, there is a script in the `/bin` directory that allows you to SSH in to the environment from the project directory directly: `./bin/ssh`.
+
+## Useful Bash Aliases
+
+To increase efficiency with WP Local Docker, the following bash aliases can be added `~/.bashrc` or `~/.bash_profile`:
+
+1. WP-CLI:
+    ```bash
+    alias dcwp='docker-compose exec --user www-data phpfpm wp'
+    ```
+2. SSH into container:
+    ```bash
+    alias dcbash='docker-compose exec --user root phpfpm bash'
+    ```
+3. Multiple instances cannot be run simultaneously. In order to switch projects, you'll need to kill all Docker containers first: 
+    ```bash
+    docker-stop() { docker stop $(docker ps -a -q); }
+    ```
+4. Combine the stop-all command with `docker-compose up` to easily start up an instance with one command: 
+    ```bash
+    alias dup="docker-stop && docker-compose up -d"
+    ```
 
 ## MailCatcher
 
@@ -123,6 +153,12 @@ Examples:
 ./bin/wpsnapshots.sh pull <snapshot-id>
 ./bin/wpsnapshots.sh search <search-text>
 ```
+
+## Updating WP Local Docker
+
+WP Local Docker is an ever-evolving tool, and it's important to keep your local install up-to-date. Don't forget to `git pull` the latest WP Local Docker code every once in a while to make sure you're running the latest version. We also recommend "watching" this repo on GitHub to stay on top of the latest development. You won’t need to grab every update, but you’ll be aware of bug fixes and enhancements that’ll keep your local development environments running smoothly.
+
+It's especially important to `git pull` the latest code before you `docker pull` upgrades to your Docker images, either as a potential fix for an issue or just to make sure they’re running the latest versions of everything. This will make sure you have the latest WP Local Docker code first, including the `docker-compose.yml` file that defines what Docker images and versions the environment uses.
 
 ## Credits
 

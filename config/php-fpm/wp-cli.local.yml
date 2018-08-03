@@ -8,4 +8,5 @@ config create:
     define( 'SAVEQUERIES', true );
     define( 'COOKIE_DOMAIN', $_SERVER['HTTP_HOST'] );
     $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?: 'localhost';
     $memcached_servers = [ [ 'main_memcached', 11211 ] ];

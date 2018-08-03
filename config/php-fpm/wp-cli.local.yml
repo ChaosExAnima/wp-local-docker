@@ -1,8 +1,11 @@
 config create:
-	dbhost: main_db
-	dbuser: root
-	dbpass:
-	extra-php: |
-		define( 'DISALLOW_FILE_EDIT', true );
-		define( 'WP_DEBUG', true );
-		define( 'SAVEQUERIES', true );
+  dbhost: main_db
+  dbuser: root
+  dbpass:
+  extra-php: |
+    define( 'DISALLOW_FILE_EDIT', true );
+    define( 'WP_DEBUG', true );
+    define( 'SAVEQUERIES', true );
+    define( 'COOKIE_DOMAIN', $_SERVER['HTTP_HOST'] );
+    $_SERVER['HTTPS'] = 'on';
+    $memcached_servers = [ [ 'main_memcached', 11211 ] ];

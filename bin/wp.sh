@@ -1,3 +1,5 @@
 #!/bin/bash
 
-docker-compose exec --user www-data phpfpm wp "$@"
+USER=`id -u`
+
+docker-compose exec --user $USER:www-data phpfpm wp "$@"

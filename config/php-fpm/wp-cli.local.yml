@@ -1,8 +1,8 @@
 config create:
-	dbhost: mysql
+	dbhost: main_db
 	dbname: wordpress
 	dbuser: root
-	dbpass: password
+	dbpass:
 	extra-php: |
 		define( 'DISALLOW_FILE_EDIT', true );
 		define( 'WP_DEBUG', true );

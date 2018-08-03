@@ -1,4 +1,7 @@
 #!/bin/bash
+
+USER=`id -u`
+
 if [ -f "./wordpress/wp-config.php" ]; then
 	echo "WordPress config file found."
 
@@ -7,7 +10,7 @@ if [ -f "./wordpress/wp-config.php" ]; then
 
 	if [ "y" = "$REINSTALL" ]
 	then
-		docker-compose exec --user www-data phpfpm wp db reset --yes
+		docker-compose exec --user $USER:www-data phpfpm wp db reset --yes
 	else
 		echo "Installation aborted."
 		exit 1
@@ -19,18 +22,18 @@ echo -n "Do you want a multisite installation? [y/n] "
 read MULTISITE
 
 # Install WordPress
-docker-compose exec --user www-data phpfpm wp core download --force
-docker-compose exec -T --user www-data phpfpm wp core config --force
+docker-compose exec --user $USER:www-data phpfpm wp core download --force
+docker-compose exec -T --user $USER:www-data phpfpm wp core config --force
 
 if [ "y" = "$MULTISITE" ]
 then
-	docker-compose exec --user www-data phpfpm wp core multisite-install --prompt
+	docker-compose exec --user $USER:www-data phpfpm wp core multisite-install --prompt
 else
-	docker-compose exec --user www-data phpfpm wp core install --prompt
+	docker-compose exec --user $USER:www-data phpfpm wp core install --prompt
 fi
 
 # Adjust settings
-docker-compose exec --user www-data phpfpm wp rewrite structure "/%postname%/"
+docker-compose exec --user $USER:www-data phpfpm wp rewrite structure "/%postname%/"
 
 # Ask to remove default content ?
 echo -n "Do you want to remove the default content? [y/n] "
@@ -39,21 +42,21 @@ read EMPTY_CONTENT
 if [ "y" = "$EMPTY_CONTENT" ]
 then
 	# Remove all posts, comments, and terms
-	docker-compose exec --user www-data phpfpm wp site empty --yes
+	docker-compose exec --user $USER:www-data phpfpm wp site empty --yes
 
 	# Remove plugins and themes
-	docker-compose exec --user www-data phpfpm wp plugin delete hello
-	docker-compose exec --user www-data phpfpm wp plugin delete akismet
-	docker-compose exec --user www-data phpfpm wp theme delete twentyfifteen
-	docker-compose exec --user www-data phpfpm wp theme delete twentysixteen
+	docker-compose exec --user $USER:www-data phpfpm wp plugin delete hello
+	docker-compose exec --user $USER:www-data phpfpm wp plugin delete akismet
+	docker-compose exec --user $USER:www-data phpfpm wp theme delete twentyfifteen
+	docker-compose exec --user $USER:www-data phpfpm wp theme delete twentysixteen
 
 	# Remove widgets
-	docker-compose exec --user www-data phpfpm wp widget delete recent-posts-2
-	docker-compose exec --user www-data phpfpm wp widget delete recent-comments-2
-	docker-compose exec --user www-data phpfpm wp widget delete archives-2
-	docker-compose exec --user www-data phpfpm wp widget delete search-2
-	docker-compose exec --user www-data phpfpm wp widget delete categories-2
-	docker-compose exec --user www-data phpfpm wp widget delete meta-2
+	docker-compose exec --user $USER:www-data phpfpm wp widget delete recent-posts-2
+	docker-compose exec --user $USER:www-data phpfpm wp widget delete recent-comments-2
+	docker-compose exec --user $USER:www-data phpfpm wp widget delete archives-2
+	docker-compose exec --user $USER:www-data phpfpm wp widget delete search-2
+	docker-compose exec --user $USER:www-data phpfpm wp widget delete categories-2
+	docker-compose exec --user $USER:www-data phpfpm wp widget delete meta-2
 fi
 
 echo "Installation done."

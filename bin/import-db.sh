@@ -14,5 +14,5 @@ export $(egrep -v '^#' ./.env | xargs)
 
 HOST=main_db
 SIZE=`gzip -l $FILE | sed -n 2p | awk '{ print $2 }'`
-zcat < $FILE | pv --size=$SIZE | docker exec -i $HOST mysql -uroot -p $PROJECT_NAME
+zcat < $FILE | pv --size=$SIZE | docker exec -i $HOST mysql -uroot $PROJECT_NAME
 echo "Done!"

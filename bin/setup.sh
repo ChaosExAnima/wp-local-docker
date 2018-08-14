@@ -1,7 +1,8 @@
 #!/bin/bash
 
 USER=`id -u`
-PROJECT=`basename "$PWD"`
+
+export $(egrep -v '^#' ./.env | xargs)
 
 if [ -f "./wordpress/wp-config.php" ]; then
 	echo "WordPress config file found."
@@ -24,7 +25,7 @@ read MULTISITE
 
 # Install WordPress
 docker-compose exec --user $USER:www-data phpfpm wp core download --force
-docker-compose exec -T --user $USER:www-data phpfpm wp core config --force --dbname=$PROJECT
+docker-compose exec -T --user $USER:www-data phpfpm wp core config --force --dbname=$PROJECT_NAME
 
 if [ "y" = "$MULTISITE" ]
 then

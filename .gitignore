@@ -45,3 +45,4 @@ config/wpsnapshots/.wpsnapshots.json
 config/nginx/conf.d/
 
 .env
+config/wpsnapshots/config.json

@@ -23,13 +23,13 @@ read MULTISITE
 
 # Install WordPress
 docker-compose exec phpfpm su -s /bin/bash www-data -c "wp core download --force"
-docker-compose exec -T phpfpm su -s /bin/bash www-data -c "wp core config --force"
+docker-compose exec -T phpfpm su -s /bin/bash www-data -c "wp core config --dbname=$PROJECT_NAME --force"
 
 if [ "y" = "$MULTISITE" ]
 then
 	docker-compose exec phpfpm su -s /bin/bash www-data -c "wp core multisite-install --prompt"
 else
-	docker-compose exec phpfpm su -s /bin/bash www-data -c "wp core install --prompt"
+	docker-compose exec phpfpm su -s /bin/bash www-data -c "wp core install --url=$PROJECT_NAME.dev.localhost --title='$PROJECT_TITLE' --admin_user=admin --admin_password=password --admin_email=admin@$PROJECT_NAME.dev.localhost --skip-email"
 fi
 
 # Adjust settings

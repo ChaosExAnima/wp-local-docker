@@ -10,7 +10,12 @@ if [ ! -f "./.env" ]; then
 	if [ -z $PROJECT_NAME ]; then
 		PROJECT_NAME=$DIRNAME
 	fi
+
+	echo -n "Enter the title of your site: "
+	read PROJECT_TITLE
+
 	echo "PROJECT_NAME=$PROJECT_NAME" > .env
+	echo "PROJECT_TITLE=$PROJECT_TITLE" >> .env
 fi
 
 echo "Environment set up."

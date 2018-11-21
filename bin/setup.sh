@@ -24,6 +24,7 @@ read MULTISITE
 # Install WordPress
 docker-compose exec phpfpm su -s /bin/bash www-data -c "wp core download --force"
 docker-compose exec -T phpfpm su -s /bin/bash www-data -c "wp core config --dbname=$PROJECT_NAME --force"
+docker-compose exec phpfpm su -s /bin/bash www-data -c "wp db create"
 
 if [ "y" = "$MULTISITE" ]
 then
